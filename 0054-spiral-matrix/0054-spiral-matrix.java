@@ -1,47 +1,41 @@
-public class Solution {
+class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> output_arr = new ArrayList();
         
-        List<Integer> res = new ArrayList<Integer>();
-        
-        if (matrix.length == 0) {
-            return res;
-        }
-        
-        int rowBegin = 0;
-        int rowEnd = matrix.length-1;
-        int colBegin = 0;
-        int colEnd = matrix[0].length - 1;
-        
-        while (rowBegin <= rowEnd && colBegin <= colEnd) {
-            // Traverse Right
-            for (int j = colBegin; j <= colEnd; j ++) {
-                res.add(matrix[rowBegin][j]);
+        if(matrix.length == 0) return output_arr;
+        int rowBegin = 0, rowEnd = matrix.length - 1, columnBegin = 0, columnEnd = matrix[0].length - 1;
+        while(rowBegin <= rowEnd && columnBegin <= columnEnd) {
+            for(int i = columnBegin; i <= columnEnd; i++) {
+                output_arr.add(matrix[rowBegin][i]);
             }
+            
             rowBegin++;
             
-            // Traverse Down
-            for (int j = rowBegin; j <= rowEnd; j ++) {
-                res.add(matrix[j][colEnd]);
+            for(int i = rowBegin; i <= rowEnd; i++) {
+                output_arr.add(matrix[i][columnEnd]);
             }
-            colEnd--;
             
-            if (rowBegin <= rowEnd) {
-                // Traverse Left
-                for (int j = colEnd; j >= colBegin; j --) {
-                    res.add(matrix[rowEnd][j]);
-                }
-            }
-            rowEnd--;
+            columnEnd--;
             
-            if (colBegin <= colEnd) {
-                // Traver Up
-                for (int j = rowEnd; j >= rowBegin; j --) {
-                    res.add(matrix[j][colBegin]);
+            if(rowBegin <= rowEnd) {
+                for(int i = columnEnd; i >= columnBegin; i--) {
+                    output_arr.add(matrix[rowEnd][i]);
                 }
+                
+                rowEnd--;
+                    
             }
-            colBegin ++;
+            
+            if(columnBegin <= columnEnd) {
+                for(int i = rowEnd; i >= rowBegin; i--) {
+                    output_arr.add(matrix[i][columnBegin]);
+                }
+                
+                columnBegin++;
+                
+            }
         }
         
-        return res;
+        return output_arr;
     }
 }
