@@ -1,9 +1,16 @@
 class Solution {
     public boolean judgeSquareSum(int c) {
-        for(double i = 0; i <= Math.sqrt(c); i++) {
-            double rem = c - Math.pow(i, 2);
-            double sqrt = Math.sqrt(rem);
-            if((sqrt - Math.floor(sqrt)) == 0) {
+        long a = 0;
+        long b = (long) Math.sqrt(c);
+        while(a <= b){
+            long val = a*a + b*b;
+            if(val > c){
+                b--;
+            }
+            else if(val < c){
+                a++;
+            }
+            else{
                 return true;
             }
         }
