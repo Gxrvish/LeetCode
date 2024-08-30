@@ -1,6 +1,3 @@
-SELECT class 
-FROM (
-    SELECT class, count(class) as no_of_class
-    FROM courses
-    GROUP BY class
-) as no WHERE no_of_class >= 5
+select class from courses
+group by class
+having count(class)>=5
