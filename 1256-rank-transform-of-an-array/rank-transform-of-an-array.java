@@ -1,20 +1,16 @@
-import java.util.*;
-
 class Solution {
-    public int[] arrayRankTransform(int[] arr) {
-        Map<Integer, Integer> valueToRank = new HashMap<>();  // Map to store value-to-rank mapping
-        int[] sortedUniqueNumbers = Arrays.stream(arr).distinct().sorted().toArray();  // Remove duplicates and sort
-        
-        // Assign ranks to sorted unique elements
-        for (int i = 0; i < sortedUniqueNumbers.length; i++) {
-            valueToRank.put(sortedUniqueNumbers[i], i + 1);
-        }
+  public int[] arrayRankTransform(int[] arr) {
+    int[] sortedArr = arr.clone();
+    Map<Integer, Integer> rank = new HashMap<>();
 
-        // Replace each element in the original array with its rank
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = valueToRank.get(arr[i]);
-        }
+    Arrays.sort(sortedArr);
 
-        return arr;  // Return the updated array
-    }
+    for (final int a : sortedArr)
+      rank.putIfAbsent(a, rank.size() + 1);
+
+    for (int i = 0; i < arr.length; ++i)
+      arr[i] = rank.get(arr[i]);
+
+    return arr;
+  }
 }
