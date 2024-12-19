@@ -1,23 +1,41 @@
 class Solution {
-    public int numSquares(int n) {
-        // Create a dp array to store the minimum number of perfect squares for each number
-        int[] dp = new int[n + 1];
+    public int numSquares(int N) {
+        // If N is perfect square
+        if (isPerfectSquare(N))
+            return 1;
 
-        // Initialize the dp array with a large value (infinity substitute)
-        for (int i = 1; i <= n; i++) {
-            dp[i] = Integer.MAX_VALUE;
+        // If N is sum of 2 perfect squares
+        for (int i = 1; i * i < N; i++) {
+            if (isPerfectSquare(N - i * i))
+                return 2;
         }
 
-        // Base case: 0 can be represented as 0 perfect squares
-        dp[0] = 0;
+        // If N is sum of 3 perfect squares
+        if (legendreFunction(N))
+            return 3;
 
-        // Fill the dp array
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j * j <= i; j++) {
-                dp[i] = Math.min(dp[i], dp[i - j * j] + 1);
-            }
-        }
+        // Otherwise, N is the
+        // sum of 4 perfect squares
+        return 4;
+    }
 
-        return dp[n];
+    boolean legendreFunction(int N) {
+
+        // Factor out the powers of 4
+        while (N % 4 == 0)
+            N /= 4;
+
+        // N is NOT of the
+        // form 4^a * (8b + 7)
+        if (N % 8 != 7)
+            return true;
+        else
+            return false;
+    }
+
+    boolean isPerfectSquare(int N) {
+        int floorSqrt = (int) Math.sqrt(N);
+
+        return (N == floorSqrt * floorSqrt);
     }
 }
