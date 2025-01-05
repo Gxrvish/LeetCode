@@ -1,34 +1,25 @@
 class Solution {
     public String shiftingLetters(String s, int[][] shifts) {
         int n = s.length();
-        int[] diffArray = new int[n];
+        int[] diffArray = new int[n + 1]; // Extra space to avoid boundary checks
 
+        // Update the difference array based on shifts
         for (int[] shift : shifts) {
-            if (shift[2] == 1) {
-                diffArray[shift[0]]++;
-                if (shift[1] + 1 < n) {
-                    diffArray[shift[1] + 1]--;
-                }
-            } else {
-                diffArray[shift[0]]--;
-                if (shift[1] + 1 < n) {
-                    diffArray[shift[1] + 1]++;
-                }
-            }
+            int start = shift[0], end = shift[1], direction = shift[2];
+            diffArray[start] += (direction == 1 ? 1 : -1);
+            diffArray[end + 1] -= (direction == 1 ? 1 : -1);
         }
 
-        StringBuilder result = new StringBuilder(s);
-        int numberOfShifts = 0;
+        // Compute the cumulative shifts
+        int netShift = 0;
+        char[] result = s.toCharArray();
 
         for (int i = 0; i < n; i++) {
-            numberOfShifts = (numberOfShifts + diffArray[i]) % 26;
-            if (numberOfShifts < 0) numberOfShifts += 26;
-
-            char shiftedChar = (char) ('a' +
-                ((s.charAt(i) - 'a' + numberOfShifts) % 26));
-            result.setCharAt(i, shiftedChar);
+            netShift = (netShift + diffArray[i]) % 26;
+            if (netShift < 0) netShift += 26; // Handle negative shifts
+            result[i] = (char) ('a' + (result[i] - 'a' + netShift) % 26);
         }
 
-        return result.toString();
+        return new String(result);
     }
 }
