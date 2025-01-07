@@ -1,16 +1,16 @@
 class Solution {
     public List<String> stringMatching(String[] words) {
-        ArrayList<String> ans = new ArrayList<>();
+        List<String> ans = new ArrayList<>();
+        // Sort the words array by length
         Arrays.sort(words, Comparator.comparingInt(String::length));
-        for(int i=0; i<words.length-1; i++) {
-            boolean meet = false;
-            for(int j=i+1; j<words.length; j++) {
-                if(words[j].indexOf(words[i]) != -1) {
-                    meet = true;
+
+        // Compare each word with all subsequent words
+        for (int i = 0; i < words.length; i++) {
+            for (int j = i + 1; j < words.length; j++) {
+                if (words[j].contains(words[i])) {
+                    ans.add(words[i]);
+                    break; // No need to check further once a match is found
                 }
-            }
-            if(meet == true) {
-                ans.add(words[i]);
             }
         }
         return ans;
