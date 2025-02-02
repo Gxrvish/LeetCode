@@ -1,12 +1,23 @@
 class Solution {
     public int maxProfit(int[] prices) {
-        int sell = 0, prev_sell = 0, buy = Integer.MIN_VALUE, prev_buy;
-        for (int price : prices) {
-            prev_buy = buy;
-            buy = Math.max(prev_sell - price, prev_buy);
-            prev_sell = sell;
-            sell = Math.max(prev_buy + price, prev_sell);
+        if (prices.length == 0) return 0;
+
+        int n = prices.length;
+        int[] hold = new int[n];
+        int[] sold = new int[n];
+        int[] rest = new int[n];
+
+        hold[0] = -prices[0];  // Buying the stock
+        sold[0] = 0;           // No profit from selling initially
+        rest[0] = 0;           // No profit from cooldown initially
+
+        for (int i = 1; i < n; i++) {
+            hold[i] = Math.max(hold[i-1], rest[i-1] - prices[i]);
+            sold[i] = hold[i-1] + prices[i];
+            rest[i] = Math.max(rest[i-1], sold[i-1]);
         }
-        return sell;
+
+        // Maximum profit comes from either selling or resting
+        return Math.max(sold[n-1], rest[n-1]);
     }
 }
