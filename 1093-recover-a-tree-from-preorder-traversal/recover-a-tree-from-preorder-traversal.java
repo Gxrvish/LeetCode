@@ -1,55 +1,47 @@
-public class Solution {
+class Solution {
 
     public TreeNode recoverFromPreorder(String traversal) {
-        Stack<TreeNode> stack = new Stack<>();
-        int index = 0;
+        // List to track the last node at each depth
+        List<TreeNode> levels = new ArrayList<>();
+        int index = 0, n = traversal.length();
 
-        while (index < traversal.length()) {
-            // Count the number of dashes
+        while (index < n) {
+            // Count depth (number of dashes)
             int depth = 0;
-            while (
-                index < traversal.length() && traversal.charAt(index) == '-'
-            ) {
+            while (index < n && traversal.charAt(index) == '-') {
                 depth++;
                 index++;
             }
 
-            // Extract the node value
+            // Extract node value
             int value = 0;
-            while (
-                index < traversal.length() &&
-                Character.isDigit(traversal.charAt(index))
-            ) {
+            while (index < n && Character.isDigit(traversal.charAt(index))) {
                 value = value * 10 + (traversal.charAt(index) - '0');
                 index++;
             }
 
-            // Create the current node
+            // Create the new node
             TreeNode node = new TreeNode(value);
 
-            // Adjust the stack to the correct depth
-            while (stack.size() > depth) {
-                stack.pop();
+            // Adjust levels list to match the current depth
+            if (depth < levels.size()) {
+                levels.set(depth, node);
+            } else {
+                levels.add(node);
             }
 
-            // Attach the node to the parent
-            if (!stack.empty()) {
-                if (stack.peek().left == null) {
-                    stack.peek().left = node;
+            // Attach the node to its parent
+            if (depth > 0) {
+                TreeNode parent = levels.get(depth - 1);
+                if (parent.left == null) {
+                    parent.left = node;
                 } else {
-                    stack.peek().right = node;
+                    parent.right = node;
                 }
             }
-
-            // Push the current node onto the stack
-            stack.push(node);
         }
 
-        // The root is the first node in the stack
-        while (stack.size() > 1) {
-            stack.pop();
-        }
-
-        return stack.peek();
+        // The root node is always at index 0
+        return levels.get(0);
     }
 }
