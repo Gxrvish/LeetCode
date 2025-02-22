@@ -1,47 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
 class Solution {
+    private String s;
+    private int idx, level;
 
-    public TreeNode recoverFromPreorder(String traversal) {
-        // List to track the last node at each depth
-        List<TreeNode> levels = new ArrayList<>();
-        int index = 0, n = traversal.length();
+    public TreeNode recoverFromPreorder(final String traversal) {
+        this.s = traversal;
+        this.idx = 0;
+        this.level = 0;
 
-        while (index < n) {
-            // Count depth (number of dashes)
-            int depth = 0;
-            while (index < n && traversal.charAt(index) == '-') {
-                depth++;
-                index++;
+        TreeNode node = new TreeNode(-1);
+
+        this.helper(node, 0);
+
+        return node.left;
+    }
+
+    private void helper(final TreeNode parent, final int lvl) {
+        while(this.idx < this.s.length() && lvl == level) {
+            int num = 0;
+
+            // Get value
+            while(this.idx < this.s.length() && Character.isDigit(this.s.charAt(this.idx))) {
+                num *= 10;
+                num += this.s.charAt(this.idx++) - '0';
             }
 
-            // Extract node value
-            int value = 0;
-            while (index < n && Character.isDigit(traversal.charAt(index))) {
-                value = value * 10 + (traversal.charAt(index) - '0');
-                index++;
+            // Add child
+            final TreeNode node = new TreeNode(num);
+
+            if(parent.left == null)
+                parent.left = node;
+            else
+                parent.right = node;
+
+            this.level = 0;
+
+            // Get next level
+            while(this.idx < this.s.length() && this.s.charAt(this.idx) == '-') {
+                this.level++;
+                this.idx++;
             }
 
-            // Create the new node
-            TreeNode node = new TreeNode(value);
-
-            // Adjust levels list to match the current depth
-            if (depth < levels.size()) {
-                levels.set(depth, node);
-            } else {
-                levels.add(node);
-            }
-
-            // Attach the node to its parent
-            if (depth > 0) {
-                TreeNode parent = levels.get(depth - 1);
-                if (parent.left == null) {
-                    parent.left = node;
-                } else {
-                    parent.right = node;
-                }
-            }
+            this.helper(node, lvl + 1);
         }
-
-        // The root node is always at index 0
-        return levels.get(0);
     }
 }
