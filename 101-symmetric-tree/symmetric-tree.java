@@ -1,15 +1,25 @@
 class Solution {
+
     public boolean isSymmetric(TreeNode root) {
-        if (root == null) return true; // An empty tree is symmetric
-        return isMirror(root.left, root.right);
-    }
+        if (root == null) return true; // Empty tree is symmetric
 
-    private boolean isMirror(TreeNode left, TreeNode right) {
-        if (left == null && right == null) return true;  // Both null, so symmetric
-        if (left == null || right == null) return false; // One is null, not symmetric
-        if (left.val != right.val) return false;         // Values don't match
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root.left);
+        queue.offer(root.right);
 
-        // Recursively check if left subtree is a mirror of right subtree
-        return isMirror(left.left, right.right) && isMirror(left.right, right.left);
+        while (!queue.isEmpty()) {
+            TreeNode left = queue.poll();
+            TreeNode right = queue.poll();
+
+            if (left == null && right == null) continue; // Both null → symmetric at this level
+            if (left == null || right == null || left.val != right.val) return false; // Mismatch
+
+            // Add children in mirror order
+            queue.offer(left.left);
+            queue.offer(right.right);
+            queue.offer(left.right);
+            queue.offer(right.left);
+        }
+        return true; // If we never found a mismatch, it's symmetric
     }
 }
