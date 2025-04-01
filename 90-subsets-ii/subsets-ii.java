@@ -10,7 +10,7 @@ class Solution {
         result.add(new ArrayList<>(currSub)); // Directly add the current subset
 
         for (int i = index; i < nums.length; i++) {
-            // ✅ Skip duplicates by ensuring we only pick the first occurrence at the same recursion level
+            // Skip duplicates by ensuring we only pick the first occurrence at the same recursion level
             if (i > index && nums[i] == nums[i - 1]) continue;
 
             currSub.add(nums[i]); // Include the current element
