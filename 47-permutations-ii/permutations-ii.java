@@ -1,42 +1,45 @@
 class Solution {
-
     public List<List<Integer>> permuteUnique(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
 
-        // Start backtracking from index 0
-        backtrack(nums, 0, result);
+        // Sort the array so that duplicates are adjacent
+        Arrays.sort(nums);
+
+        // 'used' array keeps track of which elements have been included so far
+        boolean[] used = new boolean[nums.length];
+        Arrays.fill(used, false);
+
+        // Begin backtracking with an empty permutation
+        backtrack(nums, used, new ArrayList<>(), result);
         return result;
     }
 
-    // Backtracking by fixing one index at a time using swapping
-    private void backtrack(int[] nums, int index, List<List<Integer>> result) {
-        // Base case: if index has reached the end, store the current permutation
-        if (index == nums.length) {
-            List<Integer> currPermu = new ArrayList<>();
-            for (int num : nums) {
-                currPermu.add(num); // Copy array into list
-            }
-            if(!result.contains(currPermu)) result.add(currPermu);
+    private void backtrack(int[] nums, boolean[] used, List<Integer> currPermu, List<List<Integer>> result) {
+        // Base case: if we've used all numbers, add the permutation to result
+        if (currPermu.size() == nums.length) {
+            result.add(new ArrayList<>(currPermu)); // Make a copy
             return;
         }
 
-        // Try placing every number at the current index
-        for (int i = index; i < nums.length; i++) {
-            // Swap nums[i] to the current index position
-            swap(nums, index, i);
+        // Loop through all numbers to try each unused one at this position
+        for (int i = 0; i < nums.length; i++) {
+            // Skip this number if it was already used in the current path
+            if (used[i]) continue;
 
-            // Recurse to fix the next index
-            backtrack(nums, index + 1, result);
+            // Skip duplicates: if this number is same as previous and previous is not used, skip it
+            // This ensures that we only pick the *first* instance of the duplicate at the current level
+            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
 
-            // Backtrack: undo the swap to restore original state
-            swap(nums, index, i);
+            // Choose this number: add to current permutation and mark as used
+            currPermu.add(nums[i]);
+            used[i] = true;
+
+            // Recurse to build the next position
+            backtrack(nums, used, currPermu, result);
+
+            // Backtrack: remove the number and mark it as unused
+            currPermu.remove(currPermu.size() - 1);
+            used[i] = false;
         }
-    }
-
-    // Swap helper function
-    private void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
     }
 }
