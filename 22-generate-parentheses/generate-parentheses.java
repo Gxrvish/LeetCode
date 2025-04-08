@@ -1,15 +1,25 @@
 class Solution {
     public List<String> generateParenthesis(int n) {
-        ArrayList<String> output_arr = new ArrayList();
-        backtrack(output_arr, "", 0, 0, n);
-        return output_arr;
+        List<String> result = new ArrayList<>();
+        StringBuilder path = new StringBuilder();
+        path.append("(");
+        backtrack(path, result, 1, 0, n);
+        return result;
     }
-
-    public static void backtrack(ArrayList<String> output_arr, String current_string, int open, int close, int max) {
-        if(current_string.length() == max * 2) {
-            output_arr.add(current_string);
+    private void backtrack(StringBuilder path, List<String> result, int open, int close, int n) {
+        if(path.length() == n*2) {
+            result.add(path.toString());
+            return;
         }
-        if(open < max) backtrack(output_arr, current_string + "(", open + 1, close, max);
-        if(close < open) backtrack(output_arr, current_string + ")", open, close + 1, max);
+        if (open < n) {
+            path.append('(');
+            backtrack(path, result, open + 1, close, n);
+            path.deleteCharAt(path.length() - 1);
+        }
+        if (close < open) {
+            path.append(')');
+            backtrack(path, result, open, close + 1, n);
+            path.deleteCharAt(path.length() - 1);
+        }
     }
 }
