@@ -1,20 +1,15 @@
-public class Solution {
+class Solution {
+    int count = 0;
     public int findTargetSumWays(int[] nums, int target) {
-        return calculate(nums, 0, 0, target);
+        backtrack(nums, 0, target, 0);
+        return count;
     }
-
-    private int calculate(int[] nums, int index, int currentSum, int target) {
-        // Base Case: If we've processed all elements
-        if (index == nums.length) {
-            return currentSum == target ? 1 : 0;
+    private void backtrack(int[] nums, int i, int target, int sum) {
+        if(i == nums.length) {
+            if(sum == target) count++;
+            return;
         }
-
-        // Recursive Case: Add the current number
-        int add = calculate(nums, index + 1, currentSum + nums[index], target);
-        // Recursive Case: Subtract the current number
-        int subtract = calculate(nums, index + 1, currentSum - nums[index], target);
-
-        // Return total ways from both branches
-        return add + subtract;
+        backtrack(nums, i + 1, target, sum + nums[i]);
+        backtrack(nums, i + 1, target, sum - nums[i]);
     }
 }
