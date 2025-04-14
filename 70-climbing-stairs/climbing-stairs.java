@@ -1,33 +1,21 @@
 class Solution {
     public int climbStairs(int n) {
-        // Create a memo array to store results for steps 0 to n
-        int[] memo = new int[n + 1];
-        
-        // Initialize all values as -1 (uncomputed)
-        Arrays.fill(memo, -1);
+        // \U0001f7e2 Base case:
+        // From step n, there's only 1 way (you're already at the top)
+        int oneStepAhead = 1;  // Represents dp[i + 1]
+        int twoStepsAhead = 0; // Represents dp[i + 2]
 
-        // Start from step 0
-        return countWays(0, n, memo);
-    }
+        // \U0001f501 Start from step n - 1 and move backward to step 0
+        for (int i = n - 1; i >= 0; i--) {
+            // \U0001f9ee Total ways from step i = ways from (i + 1) + ways from (i + 2)
+            int current = oneStepAhead + twoStepsAhead;
 
-    int countWays(int i, int n, int[] memo) {
-        // \U0001f7e2 Base case: reached exactly step n — valid path
-        if (i == n) return 1;
+            // \U0001f501 Move the window one step backward
+            twoStepsAhead = oneStepAhead;   // dp[i + 2] ← dp[i + 1]
+            oneStepAhead = current;         // dp[i + 1] ← current dp[i]
+        }
 
-        // \U0001f534 Base case: stepped beyond n — invalid path
-        if (i > n) return 0;
-
-        // \U0001f4be If already computed, return stored result
-        if (memo[i] != -1) return memo[i];
-
-        // \U0001f9ed Explore both choices:
-        // Take 1 step or 2 steps
-        int oneStep = countWays(i + 1, n, memo);
-        int twoStep = countWays(i + 2, n, memo);
-
-        // \U0001f9ee Store the result for step i in memo
-        memo[i] = oneStep + twoStep;
-
-        return memo[i];
+        // \U0001f3c1 oneStepAhead now stores dp[0], i.e., ways from step 0
+        return oneStepAhead;
     }
 }
