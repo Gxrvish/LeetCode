@@ -1,20 +1,21 @@
 class Solution {
     public int rob(int[] nums) {
-        int n = nums.length;
-        if (n == 1) return nums[0];
-        if (n == 2) return Math.max(nums[0], nums[1]);
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, -1);
+        return robFrom(0, nums, dp);
+    }
 
-        // Initialize two variables to track the previous two results
-        int prev2 = nums[0]; // equivalent to dp[i-2]
-        int prev1 = Math.max(nums[0], nums[1]); // equivalent to dp[i-1]
-
-        // Iterate through the houses starting from the 3rd house
-        for (int i = 2; i < n; i++) {
-            int curr = Math.max(nums[i] + prev2, prev1); // Current state
-            prev2 = prev1; // Shift prev2 to prev1
-            prev1 = curr;  // Update prev1 to the current state
+    private int robFrom(int i, int[] nums, int[] dp) {
+        if (i >= nums.length) {
+            return 0;
         }
 
-        return prev1; // The last value is the maximum money robbed
+        if (dp[i] != -1) return dp[i];
+
+        int rob = nums[i] + robFrom(i + 2, nums, dp);
+        int skip = robFrom(i + 1, nums, dp);
+
+        dp[i] = Math.max(rob, skip);
+        return dp[i];
     }
 }
