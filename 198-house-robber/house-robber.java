@@ -1,21 +1,13 @@
-class Solution {
+public class Solution {
     public int rob(int[] nums) {
-        int[] dp = new int[nums.length];
-        Arrays.fill(dp, -1);
-        return robFrom(0, nums, dp);
-    }
+        int prev1 = 0, prev2 = 0;
 
-    private int robFrom(int i, int[] nums, int[] dp) {
-        if (i >= nums.length) {
-            return 0;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            int current = Math.max(nums[i] + prev2, prev1);
+            prev2 = prev1;
+            prev1 = current;
         }
 
-        if (dp[i] != -1) return dp[i];
-
-        int rob = nums[i] + robFrom(i + 2, nums, dp);
-        int skip = robFrom(i + 1, nums, dp);
-
-        dp[i] = Math.max(rob, skip);
-        return dp[i];
+        return prev1;
     }
 }
