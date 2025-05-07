@@ -1,17 +1,23 @@
 class Solution {
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {
-        int[][] dp = new int[obstacleGrid.length][obstacleGrid[0].length];
-        for(int[] obb: dp) {
-            Arrays.fill(obb, -1);
+        int m = obstacleGrid.length, n = obstacleGrid[0].length;
+        int[][] dp = new int[m][n];
+        dp[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+        for (int i = 1; i < m; i++) {
+            if (obstacleGrid[i][0] == 0)
+                dp[i][0] = dp[i - 1][0];
         }
-        return allWays(0, 0, obstacleGrid, dp);
-    }
-    public int allWays(int i, int j, int[][] arr, int[][] dp) {
-        if(i >= arr.length || j >= arr[0].length) return 0;
-        if(arr[i][j] != 0) return 0;
-        if(i == arr.length-1 && j == arr[0].length-1) return 1;
-        if(dp[i][j] != -1) return dp[i][j];
-        dp[i][j] = allWays(i+1, j, arr, dp) + allWays(i, j+1, arr, dp);
-        return dp[i][j];
+        for (int j = 1; j < n; j++) {
+            if (obstacleGrid[0][j] == 0)
+                dp[0][j] = dp[0][j - 1];
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (obstacleGrid[i][j] == 0)
+                    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+
+        return dp[m - 1][n - 1];
     }
 }
