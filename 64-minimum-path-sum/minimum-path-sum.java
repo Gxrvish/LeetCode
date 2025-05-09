@@ -2,26 +2,26 @@ class Solution {
     public int minPathSum(int[][] grid) {
         int n = grid.length, m = grid[0].length;
         int[][] dp = new int[n][m];
-        for(int[] hey : dp) {
-            Arrays.fill(hey, -1);
+
+        dp[0][0] = grid[0][0];
+
+        // Initialize first column
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = dp[i-1][0] + grid[i][0];
         }
-        return countMin(0, 0, grid, dp);
-    }
 
-    public int countMin(int i, int j, int[][] grid, int[][] dp) {
-        int m = grid.length, n = grid[0].length;
-        // base case: out of bounds
-        if (i >= m || j >= n) return Integer.MAX_VALUE;
+        // Initialize first row
+        for (int j = 1; j < m; j++) {
+            dp[0][j] = dp[0][j-1] + grid[0][j];
+        }
 
-        // base case: destination cell
-        if (i == m - 1 && j == n - 1) return grid[i][j];
+        // Fill in the rest of the dp table
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j < m; j++) {
+                dp[i][j] = grid[i][j] + Math.min(dp[i-1][j], dp[i][j-1]);
+            }
+        }
 
-        if(dp[i][j] != -1) return dp[i][j];
-
-        // recursive calls to right and down
-        int right = countMin(i, j + 1, grid, dp);
-        int down = countMin(i + 1, j, grid, dp);
-
-        return dp[i][j] = grid[i][j] + Math.min(right, down);
+        return dp[n-1][m-1];
     }
 }
