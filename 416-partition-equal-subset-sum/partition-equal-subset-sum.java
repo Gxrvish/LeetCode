@@ -3,23 +3,27 @@ class Solution {
         int sum = 0;
         for (int num : nums) sum += num;
         if (sum % 2 != 0) return false;
-
         int target = sum / 2;
-        Boolean[][] dp = new Boolean[nums.length][target + 1];
-
-        return isPartition(0, target, nums, dp);
-    }
-
-    public boolean isPartition(int i, int sum, int[] nums, Boolean[][] dp) {
-        if (sum == 0) return true;
-        if (i == nums.length || sum < 0) return false;
-
-        if (dp[i][sum] != null) return dp[i][sum];
-
-        boolean pick = isPartition(i + 1, sum - nums[i], nums, dp);
-        boolean notPick = isPartition(i + 1, sum, nums, dp);
-
-        dp[i][sum] = pick || notPick;
-        return dp[i][sum];
+        int n = nums.length;
+        boolean[][] dp = new boolean[n][target + 1];
+        // Base case: Any index can make sum 0 (by picking nothing)
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = true;
+        }
+        // Base case: First element alone can make nums[0] if it's within target
+        if (nums[0] <= target) {
+            dp[0][nums[0]] = true;
+        }
+        for (int i = 1; i < n; i++) {
+            for (int j = 1; j <= target; j++) {
+                boolean notPick = dp[i - 1][j];
+                boolean pick = false;
+                if (j >= nums[i]) {
+                    pick = dp[i - 1][j - nums[i]];
+                }
+                dp[i][j] = pick || notPick;
+            }
+        }
+        return dp[n - 1][target];
     }
 }
