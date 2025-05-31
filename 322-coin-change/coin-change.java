@@ -1,16 +1,32 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
-        int[] dp = new int[amount + 1];
-        Arrays.fill(dp, amount + 1); // Initialize with a large value
-        dp[0] = 0; // Base case: 0 coins to make amount 0
+        Arrays.sort(coins);
+        Integer[][] dp = new Integer[coins.length][amount + 1];
+        minCoins(0, coins, amount, dp);
+        int result = minCoins(0, coins, amount, dp);
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
 
-        // Iterate through all amounts
-        for (int coin : coins) { // Outer loop iterates through coins
-            for (int i = coin; i <= amount; i++) { // Start from 'coin' to avoid negative indices
-                dp[i] = Math.min(dp[i], dp[i - coin] + 1); // Transition relation
+    private int minCoins(int i, int[] coins, int amount, Integer[][] dp) {
+        // Base case: exact change made
+        if (amount == 0) return 0;
+
+        // Base case: invalid state
+        if (i == coins.length || amount < 0) return Integer.MAX_VALUE;
+        if (dp[i][amount] != null) return dp[i][amount];
+        // Option 1: pick current coin (only if amount >= coin value)
+        int pick = Integer.MAX_VALUE;
+        if (coins[i] <= amount) {
+            int res = minCoins(i, coins, amount - coins[i], dp);
+            if (res != Integer.MAX_VALUE) {
+                pick = 1 + res;
             }
         }
 
-        return dp[amount] > amount ? -1 : dp[amount]; // Return -1 if no solution
+        // Option 2: skip current coin
+        int skip = minCoins(i + 1, coins, amount, dp);
+
+        // Return the minimum of picking or skipping the coin
+        return dp[i][amount] = Math.min(pick, skip);
     }
 }
