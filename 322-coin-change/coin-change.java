@@ -1,32 +1,24 @@
 class Solution {
     public int coinChange(int[] coins, int amount) {
         Arrays.sort(coins);
-        Integer[][] dp = new Integer[coins.length][amount + 1];
-        minCoins(0, coins, amount, dp);
-        int result = minCoins(0, coins, amount, dp);
-        return result == Integer.MAX_VALUE ? -1 : result;
-    }
-
-    private int minCoins(int i, int[] coins, int amount, Integer[][] dp) {
-        // Base case: exact change made
-        if (amount == 0) return 0;
-
-        // Base case: invalid state
-        if (i == coins.length || amount < 0) return Integer.MAX_VALUE;
-        if (dp[i][amount] != null) return dp[i][amount];
-        // Option 1: pick current coin (only if amount >= coin value)
-        int pick = Integer.MAX_VALUE;
-        if (coins[i] <= amount) {
-            int res = minCoins(i, coins, amount - coins[i], dp);
-            if (res != Integer.MAX_VALUE) {
-                pick = 1 + res;
+        int n = coins.length;
+        Integer[][] dp = new Integer[n][amount + 1];
+        // Base case: zero coins needed to make amount 0
+        for (int i = 0; i < n; i++) dp[i][0] = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j <= amount; j++) {
+                // Option 1: pick the current coin if j >= coins[i]
+                int pick = Integer.MAX_VALUE;
+                if (coins[i] <= j && dp[i][j - coins[i]] != null && dp[i][j - coins[i]] != Integer.MAX_VALUE) {
+                    pick = 1 + dp[i][j - coins[i]];
+                }
+                // Option 2: skip the current coin (only if i > 0)
+                int skip = (i > 0 && dp[i - 1][j] != null) ? dp[i - 1][j] : Integer.MAX_VALUE;
+                // Take the minimum of pick and skip
+                dp[i][j] = Math.min(pick, skip);
             }
         }
-
-        // Option 2: skip current coin
-        int skip = minCoins(i + 1, coins, amount, dp);
-
-        // Return the minimum of picking or skipping the coin
-        return dp[i][amount] = Math.min(pick, skip);
+        int result = dp[n - 1][amount];
+        return result == Integer.MAX_VALUE ? -1 : result;
     }
 }
